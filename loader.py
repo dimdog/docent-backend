@@ -1,17 +1,14 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 import requests
-from app import Item
+from model import Item
 import os
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-db = SQLAlchemy(app)
-db.create_all()
+from sqlalchemy import create_engine, sessionmaker
+engine = create_engine(os.environ['DATABASE_URL'])
+session = sessionmaker(bind=engine)
 
 
 def loader():
-    top_id_obj = Item.query.order_by(Item.id.desc()).first()
+    top_id_obj = session.query(Item).order_by(Item.id.desc()).first()
     base_url = "https://collectionapi.metmuseum.org/public/collection/v1/objects"
     obj_ids = requests.get(base_url).json()['objectIDs']
     if top_id_obj:
@@ -53,35 +50,20 @@ def loader():
             new_item = Item(**new_item_dict)
             try:
                 print("{}, {}".format(new_item.title, new_item.artist))
-                db.session.add(new_item)
-                db.session.commit()
+                session.add(new_item)
+                session.commit()
             except:
                 errors.append(new_item_dict)
-                db.session.rollback()
+                session.rollback()
             if counter == 100:
                 save_total += counter
                 print("saving, {} remaining".format(len(obj_ids) - save_total))
-                db.session.commit()
+                session.commit()
                 counter = 0
                 if save_total == 6000:
                     break
-    db.session.commit()
+    session.commit()
     print("done")
     print(errors)
 
 loader()
-
-#   'city': 'Pittsburgh',
-#   'state': 'Pennsylvania',
-#   'county': '',
-#   'country': 'United States',
-#   'region': 'Mid-Atlantic',
-#   'subregion': '',
-#   'locale': '',
-#   'locus': '',
-#   'excavation': '',
-#   'river': '',
-#   'classification': 'Glass',
-#   'rightsAndReproduction': '',
-#   'linkResource': '',
-
