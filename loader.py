@@ -13,14 +13,14 @@ def loader():
     top_id_obj = Item.query.order_by(Item.id.desc()).first()
     base_url = "https://collectionapi.metmuseum.org/public/collection/v1/objects"
     obj_ids = requests.get(base_url).json()['objectIDs']
-    index = obj_ids.index(top_id_obj.id)
-    obj_ids = obj_ids[index + 1:]
+    if top_id_obj:
+        index = obj_ids.index(top_id_obj.id)
+        obj_ids = obj_ids[index + 1:]
     print(len(obj_ids))
     counter = 0
     save_total = 0
     errors = []
     for obj_id in obj_ids:
-        counter += 1
         response = requests.get(base_url + "/{}".format(obj_id)).json()
         new_item_dict = {
             "api_id": response.get("objectID"),
@@ -48,6 +48,7 @@ def loader():
             "creditLine": response.get("creditLine")
         }
         if new_item_dict['primary_image'].startswith("http") and new_item_dict['highlight']:
+            counter += 1
             new_item = Item(**new_item_dict)
             try:
                 print("{}, {}".format(new_item.title, new_item.artist))
@@ -56,11 +57,13 @@ def loader():
             except:
                 errors.append(new_item_dict)
                 db.session.rollback()
-            if counter >= 100:
+            if counter == 100:
                 save_total += counter
                 print("saving, {} remaining".format(len(obj_ids) - save_total))
                 db.session.commit()
                 counter = 0
+                if save_total == 6000:
+                    break
     db.session.commit()
     print("done")
     print(errors)
