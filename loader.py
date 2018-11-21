@@ -2,7 +2,8 @@ import requests
 from model import Item
 import os
 
-from sqlalchemy import create_engine, sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 engine = create_engine(os.environ['DATABASE_URL'])
 session = sessionmaker(bind=engine)
 
