@@ -1,36 +1,36 @@
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
-Base = declarative_base()
+app = Flask(__name__)
+db = SQLAlchemy(app)
 
 
-class Item(Base):
-    __tablename__ = 'item'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    api_id = Column(Integer, nullable=False)
-    repository = Column(String(1028), nullable=False)  # no shit make this its own object TODO
-    highlight = Column(Boolean, nullable=False)
-    public_domain = Column(Boolean, nullable=False)
-    primary_image = Column(String(1028), nullable=False)
+class Item(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    api_id = db.Column(db.Integer, nullable=False)
+    repository = db.Column(db.String(1028), nullable=False)  # no shit make this its own object TODO
+    highlight = db.Column(db.Boolean, nullable=False)
+    public_domain = db.Column(db.Boolean, nullable=False)
+    primary_image = db.Column(db.String(1028), nullable=False)
     #  TODO handle "additionalImages"
-    title = Column(String(1028), nullable=False)
-    department = Column(String(1028), nullable=False)  # make this an id / reference?
-    artist = Column(String(1028), nullable=False)  # definitely make an artist table
-    artist_bio = Column(String(1028))  # duhhhhhhhh
-    obj_date = Column(String(1028))  # make this into a DATE! Maybe a great thing to test a tensor flow parser on! #machinelearning #$$$$
-    obj_begin_date = Column(String(1028))
-    obj_end_date = Column(String(1028))
-    medium = Column(String(1028), nullable=False)
-    dimensions = Column(String(1028), nullable=False)
-    city = Column(String(1028))
-    state = Column(String(1028))
-    county = Column(String(1028))
-    country = Column(String(1028))
-    region = Column(String(1028))
-    subregion = Column(String(1028))
-    locale = Column(String(1028))
-    portfolio = Column(String(1028))
-    creditLine = Column(String(1028))
+    title = db.Column(db.String(1028), nullable=False)
+    department = db.Column(db.String(1028), nullable=False)  # make this an id / reference?
+    artist = db.Column(db.String(1028), nullable=False)  # definitely make an artist table
+    artist_bio = db.Column(db.String(1028))  # duhhhhhhhh
+    obj_date = db.Column(db.String(1028))  # make this into a DATE! Maybe a great thing to test a tensor flow parser on! #machinelearning #$$$$
+    obj_begin_date = db.Column(db.String(1028))
+    obj_end_date = db.Column(db.String(1028))
+    medium = db.Column(db.String(1028), nullable=False)
+    dimensions = db.Column(db.String(1028), nullable=False)
+    city = db.Column(db.String(1028))
+    state = db.Column(db.String(1028))
+    county = db.Column(db.String(1028))
+    country = db.Column(db.String(1028))
+    region = db.Column(db.String(1028))
+    subregion = db.Column(db.String(1028))
+    locale = db.Column(db.String(1028))
+    portfolio = db.Column(db.String(1028))
+    creditLine = db.Column(db.String(1028))
 
     def __repr__(self):
         return '<Item {},{}>'.format(self.title, self.id)
