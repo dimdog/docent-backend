@@ -1,12 +1,13 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import os
 
 import simplejson as json
 
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://wake@localhost/docent'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
 db = SQLAlchemy(app)
 
 
@@ -40,7 +41,7 @@ class Item(db.Model):
             d[column.name] = str(getattr(self, column.name))
         return d
 
-# db.create_all()
+db.create_all()
 
 
 @app.route("/")
@@ -50,7 +51,7 @@ def index():
 
 @app.route("/<int:item_id>")
 def get_item(item_id):
-    return json.dumps(Item.query.filter(Item.id==item_id).one().full())
+    return json.dumps(Item.query.filter(Item.id == item_id).one().full())
 
 
 
