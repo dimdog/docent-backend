@@ -8,8 +8,8 @@ import simplejson as json
 
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://wake@localhost/docent'
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://wake@localhost/docent'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
 db = SQLAlchemy(app)
 
 
