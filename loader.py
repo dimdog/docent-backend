@@ -5,7 +5,8 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 engine = create_engine(os.environ['DATABASE_URL'])
-session = sessionmaker(bind=engine)
+Session = sessionmaker(bind=engine)
+session = Session()
 
 
 def loader():
