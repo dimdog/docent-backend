@@ -1,2 +1,2 @@
 web: gunicorn app:app
-#release: python loader.py
+load: python loader.py
