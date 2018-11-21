@@ -51,7 +51,6 @@ class Item(db.Model):
         return d
 
 
-
 @app.route("/")
 def index():
     return json.dumps({"items": [item.tiny() for item in Item.query.all()]})
@@ -61,5 +60,4 @@ def index():
 def get_item(item_id):
     return json.dumps(Item.query.filter(Item.id == item_id).one().full())
 
-
-
+app.run()
