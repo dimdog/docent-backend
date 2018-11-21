@@ -28,6 +28,15 @@ class Item(db.Model):
     obj_end_date = db.Column(db.String(1028))
     medium = db.Column(db.String(1028), nullable=False)
     dimensions = db.Column(db.String(1028), nullable=False)
+    city = db.Column(db.String(1028))
+    state = db.Column(db.String(1028))
+    county = db.Column(db.String(1028))
+    country = db.Column(db.String(1028))
+    region = db.Column(db.String(1028))
+    subregion = db.Column(db.String(1028))
+    locale = db.Column(db.String(1028))
+    portfolio = db.Column(db.String(1028))
+    creditLine = db.Column(db.String(1028))
 
     def __repr__(self):
         return '<Item {},{}>'.format(self.title, self.id)

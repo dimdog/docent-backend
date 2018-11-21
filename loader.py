@@ -36,9 +36,18 @@ def loader():
             "obj_begin_date": response.get("objectBeginDate"),
             "obj_end_date": response.get("objectEndDate"),
             "medium": response.get("medium"),
-            "dimensions": response.get("dimensions")
+            "dimensions": response.get("dimensions"),
+            "city": response.get("city"),
+            "state": response.get("state"),
+            "county": response.get("county"),
+            "country": response.get("country"),
+            "region": response.get("region"),
+            "subregion": response.get("subregion"),
+            "locale": response.get("locale"),
+            "portfolio": response.get("portfolio"),
+            "creditLine": response.get("creditLine")
         }
-        if new_item_dict['primary_image'].startswith("http"):
+        if new_item_dict['primary_image'].startswith("http") and new_item_dict['highlight']:
             new_item = Item(**new_item_dict)
             try:
                 print("{}, {}".format(new_item.title, new_item.artist))
