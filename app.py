@@ -61,4 +61,5 @@ def index():
 def get_item(item_id):
     return json.dumps(Item.query.filter(Item.id == item_id).one().full())
 
+print("HEREEEE")
 app.run(port=os.environ['PORT'])
