@@ -1,2 +1,2 @@
-web: gunicorn app:app --port=$PORT
+web: gunicorn app
 load: python loader.py
