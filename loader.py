@@ -10,10 +10,8 @@ session = Session()
 
 
 def loader():
-    #top_id_obj = session.query(Item).order_by(Item.id.desc()).first()
+    top_id_obj = session.query(Item).order_by(Item.id.desc()).first()
     top_id_obj = None
-    session.query(Item).delete()
-    session.commit()
     base_url = "https://collectionapi.metmuseum.org/public/collection/v1/objects"
     obj_ids = requests.get(base_url).json()['objectIDs']
     if top_id_obj:
