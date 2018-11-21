@@ -7,6 +7,7 @@ import simplejson as json
 
 app = Flask(__name__)
 CORS(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://wake@localhost/docent'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
 db = SQLAlchemy(app)
 
@@ -60,4 +61,4 @@ def index():
 def get_item(item_id):
     return json.dumps(Item.query.filter(Item.id == item_id).one().full())
 
-app.run()
+app.run(port=os.environ['PORT'])
