@@ -22,5 +22,7 @@ def index():
 def get_item(item_id):
     return json.dumps(Item.query.filter(Item.id == item_id).one().full())
 
-print("HEREEEE")
-app.run(port=int(os.environ['PORT']))
+print("HERE:{}".format(os.environ['PORT']))
+app.run(port=int(os.environ.get('PORT', 17995)))
+
+
