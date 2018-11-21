@@ -50,7 +50,6 @@ class Item(db.Model):
             d[column.name] = str(getattr(self, column.name))
         return d
 
-db.create_all()
 
 
 @app.route("/")
