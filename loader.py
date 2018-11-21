@@ -54,7 +54,7 @@ def loader():
                 counter = 0
     db.session.commit()
     print("done")
-    print errors
+    print(errors)
 
 loader()
 
