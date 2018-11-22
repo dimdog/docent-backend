@@ -1,2 +1,2 @@
 web: gunicorn wsgi 
-worker: python loader.py
+#worker: python loader.py
