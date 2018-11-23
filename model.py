@@ -5,6 +5,29 @@ app = Flask(__name__)
 db = SQLAlchemy(app)
 
 
+class Repository(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(1028))
+    city = db.Column(db.String(1028))
+    state = db.Column(db.String(1028))
+    country = db.Column(db.String(1028))
+
+
+class Department(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(1028))
+    repository_id = db.Column(db.Integer, db.ForeignKey("Repository.id"), nullable=False)
+
+
+class Artist(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(1028))
+    bio = db.Column(db.String(1028))
+    birth_date = db.Column(db.String(1028))  # will make this better later
+    death_date = db.Column(db.String(1028))  # will make this better later
+    # TODO make birth and death locations?
+
+
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     api_id = db.Column(db.Integer, nullable=False)
@@ -12,7 +35,7 @@ class Item(db.Model):
     highlight = db.Column(db.Boolean, nullable=False)
     public_domain = db.Column(db.Boolean, nullable=False)
     primary_image = db.Column(db.String(1028), nullable=False)
-    #  TODO handle "additionalImages"
+    # TODO handle "additionalImages"
     title = db.Column(db.String(1028), nullable=False)
     department = db.Column(db.String(1028), nullable=False)  # make this an id / reference?
     artist = db.Column(db.String(1028), nullable=False)  # definitely make an artist table
@@ -31,6 +54,11 @@ class Item(db.Model):
     locale = db.Column(db.String(1028))
     portfolio = db.Column(db.String(1028))
     creditLine = db.Column(db.String(1028))
+    description_en = db.Column(db.String(1028))
+    description_nl = db.Column(db.String(1028))
+    description_es = db.Column(db.String(1028))
+    description_fr = db.Column(db.String(1028))
+    description_gr = db.Column(db.String(1028))
 
     def __repr__(self):
         return '<Item {},{}>'.format(self.title, self.id)

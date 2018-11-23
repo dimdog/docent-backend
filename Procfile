@@ -1,2 +1,2 @@
-web: gunicorn wsgi 
-#worker: python loader.py
+web: gunicorn wsgi
+release: python mig.py
