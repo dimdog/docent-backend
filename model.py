@@ -44,6 +44,11 @@ class ItemLanguage(db.Model):
     audiofile = db.Column(db.String(1028))
     item = relationship("Item", backref="languages")
 
+    def __repr__(self):
+        return {"language": self.language, "title": self.title, "medium": self.medium, "dimensions": self.dimensions, "creditLine": self.creditLine,
+                "description": self.description, "audiofile": self.audiofile
+                }
+
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
