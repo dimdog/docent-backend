@@ -41,7 +41,7 @@ class ItemLanguage(db.Model):
     dimensions = db.Column(db.String(1028))
     creditLine = db.Column(db.String(1028))
     description = db.Column(db.String(1028))
-    audioFile = db.Column(db.String(1028))
+    audiofile = db.Column(db.String(1028))
     item = relationship("Item", backref="languages")
 
 
