@@ -60,9 +60,9 @@ class Item(db.Model):
     description_es = db.Column(db.String(1028))
     description_fr = db.Column(db.String(1028))
     description_gr = db.Column(db.String(1028))
-    repository = relationship("Repository", back_ref="items")
-    department = relationship("Department", back_ref="items")
-    artist = relationship("Artist", back_ref="items")
+    repository = relationship("Repository", backref="items")
+    department = relationship("Department", backref="items")
+    artist = relationship("Artist", backref="items")
 
     def __repr__(self):
         return '<Item {},{}>'.format(self.title, self.id)
