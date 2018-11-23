@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 import os
+import simplejson as json
 
 
 app = Flask(__name__)
@@ -44,10 +45,10 @@ class ItemLanguage(db.Model):
     audiofile = db.Column(db.String(1028))
     item = relationship("Item", backref="languages")
 
-    def __repr__(self):
-        return {"language": self.language, "title": self.title, "medium": self.medium, "dimensions": self.dimensions, "creditLine": self.creditLine,
-                "description": self.description, "audiofile": self.audiofile
-                }
+    def __str__(self):
+        return json.dumps({"language": self.language, "title": self.title, "medium": self.medium, "dimensions": self.dimensions, "creditLine": self.creditLine,
+                           "description": self.description, "audiofile": self.audiofile
+                         })
 
 
 class Item(db.Model):
