@@ -5,6 +5,8 @@ from model import Item, Artist, Repository, Department
 
 
 app = Flask(__name__)
+
+print(os.environ)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
 db = SQLAlchemy(app)
 
