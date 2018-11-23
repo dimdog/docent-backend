@@ -84,6 +84,7 @@ class Item(db.Model):
         d["artist"] = self.artist.name
         d["repository"] = self.repository.name
         d["department"] = self.department.name
+        d["languages"] = self.languages
         return d
 
 db.create_all()
