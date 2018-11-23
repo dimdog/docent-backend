@@ -7,6 +7,8 @@ engine = create_engine(os.environ['DATABASE_URL'])
 Session = sessionmaker(bind=engine)
 session = Session()
 
+print(dir(session))
+
 first_item = Item.query.first()
 print(first_item)
 print("dir:{}".format(dir(session)))
