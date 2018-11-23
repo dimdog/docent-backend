@@ -8,7 +8,8 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 first_item = Item.query.first()
-print first_item
+print(first_item)
+print("dir:{}".format(dir(session)))
 rep_dict = {"name": first_item.repository,
             "city": "New York",
             "state": "NY",
