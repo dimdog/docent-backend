@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
+
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
@@ -31,15 +33,14 @@ class Artist(db.Model):
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     api_id = db.Column(db.Integer, nullable=False)
-    repository_id = db.Column(db.String(1028), db.ForeignKey("repository.id"))
+    repository_id = db.Column(db.String(1028), db.ForeignKey("repository.id"), nullable=False)
+    department_id = db.Column(db.String(1028), db.ForeignKey("department.id"))
+    artist_id = db.Column(db.String(1028), db.ForeignKey("artist.id"))
     highlight = db.Column(db.Boolean, nullable=False)
     public_domain = db.Column(db.Boolean, nullable=False)
     primary_image = db.Column(db.String(1028), nullable=False)
     # TODO handle "additionalImages"
     title = db.Column(db.String(1028), nullable=False)
-    department = db.Column(db.String(1028), nullable=False)  # make this an id / reference?
-    artist = db.Column(db.String(1028), nullable=False)  # definitely make an artist table
-    artist_bio = db.Column(db.String(1028))  # duhhhhhhhh
     obj_date = db.Column(db.String(1028))  # make this into a DATE! Maybe a great thing to test a tensor flow parser on! #machinelearning #$$$$
     obj_begin_date = db.Column(db.String(1028))
     obj_end_date = db.Column(db.String(1028))
@@ -59,6 +60,9 @@ class Item(db.Model):
     description_es = db.Column(db.String(1028))
     description_fr = db.Column(db.String(1028))
     description_gr = db.Column(db.String(1028))
+    repository = relationship("Repository", back_populates="items")
+    department = relationship("Department", back_populates="items")
+    artist = relationship("Artist", back_populates="items")
 
     def __repr__(self):
         return '<Item {},{}>'.format(self.title, self.id)
@@ -70,5 +74,8 @@ class Item(db.Model):
         d = {}
         for column in self.__table__.columns:
             d[column.name] = str(getattr(self, column.name))
+        d["artist"] = self.artist.name
+        d["repository"] = self.repository.name
+        d["deparmtnet"] = self.department.name
         return d
 
