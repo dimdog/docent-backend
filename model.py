@@ -1,9 +1,11 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
+import os
 
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
 db = SQLAlchemy(app)
 
 
@@ -39,6 +41,7 @@ class ItemLanguage(db.Model):
     dimensions = db.Column(db.String(1028))
     creditLine = db.Column(db.String(1028))
     description = db.Column(db.String(1028))
+    audioFile = db.Column(db.String(1028))
     item = relationship("Item", backref="languages")
 
 
@@ -54,11 +57,6 @@ class Item(db.Model):
     obj_date = db.Column(db.String(1028))  # make this into a DATE! Maybe a great thing to test a tensor flow parser on! #machinelearning #$$$$
     obj_begin_date = db.Column(db.String(1028))
     obj_end_date = db.Column(db.String(1028))
-
-    title = db.Column(db.String(1028), nullable=False)
-    medium = db.Column(db.String(1028), nullable=False)
-    creditLine = db.Column(db.String(1028))
-
     city = db.Column(db.String(1028))
     state = db.Column(db.String(1028))
     county = db.Column(db.String(1028))
@@ -88,3 +86,4 @@ class Item(db.Model):
         d["department"] = self.department.name
         return d
 
+db.create_all()
