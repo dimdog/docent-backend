@@ -1,24 +1,21 @@
-from model import Item, Artist, Repository, Department
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 import os
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from model import Item, Artist, Repository, Department
 
 
-Base = declarative_base()
-engine = create_engine(os.environ['DATABASE_URL'])
-Session = sessionmaker(bind=engine)
-session = Session()
-
-Base.metadata.create_all(engine)
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
+db = SQLAlchemy(app)
 
 
-first_item = session.query(Item).first()
-rep_dict = { "name": first_item.repository,
-             "city": "New York",
-             "state": "NY",
-             "country": "United States of America"}
+db.create_all()
+
+first_item = db.query(Item).first()
+rep_dict = {"name": first_item.repository,
+            "city": "New York",
+            "state": "NY",
+            "country": "United States of America"}
 rep = Repository(**rep_dict)
-session.add(rep)
-session.commit()
+db.add(rep)
+db.commit()
