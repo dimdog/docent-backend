@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 print(os.environ)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
-print app.config['SQLALCHEMY_DATABASE_URI']
+print("CONFIG:{}".format(app.config['SQLALCHEMY_DATABASE_URI']))
 db = SQLAlchemy(app)
 
 
