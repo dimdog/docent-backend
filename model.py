@@ -16,7 +16,7 @@ class Repository(db.Model):
 class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(1028))
-    repository_id = db.Column(db.Integer, db.ForeignKey("Repository.id"), nullable=False)
+    repository_id = db.Column(db.Integer, db.ForeignKey("repository.id"), nullable=False)
 
 
 class Artist(db.Model):
@@ -31,7 +31,7 @@ class Artist(db.Model):
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     api_id = db.Column(db.Integer, nullable=False)
-    repository = db.Column(db.String(1028), nullable=False)  # no shit make this its own object TODO
+    repository_id = db.Column(db.String(1028), db.ForeignKey("repository.id"))
     highlight = db.Column(db.Boolean, nullable=False)
     public_domain = db.Column(db.Boolean, nullable=False)
     primary_image = db.Column(db.String(1028), nullable=False)

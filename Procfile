@@ -1,2 +1,2 @@
 web: gunicorn wsgi
-worker: python mig.py
+#worker: python mig.py
