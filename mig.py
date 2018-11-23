@@ -11,11 +11,11 @@ db = SQLAlchemy(app)
 
 db.create_all()
 
-first_item = db.query(Item).first()
+first_item = Item.query.first()
 rep_dict = {"name": first_item.repository,
             "city": "New York",
             "state": "NY",
             "country": "United States of America"}
 rep = Repository(**rep_dict)
-db.add(rep)
-db.commit()
+db.session.add(rep)
+db.session.commit()
