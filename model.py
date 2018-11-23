@@ -19,33 +19,46 @@ class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(1028))
     repository_id = db.Column(db.Integer, db.ForeignKey("repository.id"), nullable=False)
+    repository = relationship("Repository", backref="departments")
 
 
 class Artist(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(1028))
-    bio = db.Column(db.String(1028))
+    bio = db.Column(db.String(1028))  # will need multilingual support TODO
     birth_date = db.Column(db.String(1028))  # will make this better later
     death_date = db.Column(db.String(1028))  # will make this better later
     # TODO make birth and death locations?
 
 
+class ItemLanguage(db.Model):
+    item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False, primary_key=True)
+    language = db.Column(db.String(10), nullable=False, primary_key=True)
+    title = db.Column(db.String(1028), nullable=False)
+    medium = db.Column(db.String(1028), nullable=False)
+    dimensions = db.Column(db.String(1028))
+    creditLine = db.Column(db.String(1028))
+    description = db.Column(db.String(1028))
+    item = relationship("Item", backref="languages")
+
+
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    api_id = db.Column(db.Integer, nullable=False)
+    api_id = db.Column(db.String(1028), nullable=False)
     repository_id = db.Column(db.String(1028), db.ForeignKey("repository.id"), nullable=False)
     department_id = db.Column(db.String(1028), db.ForeignKey("department.id"))
     artist_id = db.Column(db.String(1028), db.ForeignKey("artist.id"))
-    highlight = db.Column(db.Boolean, nullable=False)
     public_domain = db.Column(db.Boolean, nullable=False)
     primary_image = db.Column(db.String(1028), nullable=False)
     # TODO handle "additionalImages"
-    title = db.Column(db.String(1028), nullable=False)
     obj_date = db.Column(db.String(1028))  # make this into a DATE! Maybe a great thing to test a tensor flow parser on! #machinelearning #$$$$
     obj_begin_date = db.Column(db.String(1028))
     obj_end_date = db.Column(db.String(1028))
+
+    title = db.Column(db.String(1028), nullable=False)
     medium = db.Column(db.String(1028), nullable=False)
-    dimensions = db.Column(db.String(1028), nullable=False)
+    creditLine = db.Column(db.String(1028))
+
     city = db.Column(db.String(1028))
     state = db.Column(db.String(1028))
     county = db.Column(db.String(1028))
@@ -54,12 +67,8 @@ class Item(db.Model):
     subregion = db.Column(db.String(1028))
     locale = db.Column(db.String(1028))
     portfolio = db.Column(db.String(1028))
-    creditLine = db.Column(db.String(1028))
-    description_en = db.Column(db.String(1028))
-    description_nl = db.Column(db.String(1028))
-    description_es = db.Column(db.String(1028))
-    description_fr = db.Column(db.String(1028))
-    description_gr = db.Column(db.String(1028))
+    primary_image_height = db.Column(db.Integer)
+    primary_image_width = db.Column(db.Integer)
     repository = relationship("Repository", backref="items")
     department = relationship("Department", backref="items")
     artist = relationship("Artist", backref="items")
@@ -76,6 +85,6 @@ class Item(db.Model):
             d[column.name] = str(getattr(self, column.name))
         d["artist"] = self.artist.name
         d["repository"] = self.repository.name
-        d["deparmtnet"] = self.department.name
+        d["department"] = self.department.name
         return d
 
