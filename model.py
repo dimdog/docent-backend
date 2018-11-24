@@ -82,7 +82,7 @@ class Item(db.Model):
         return '<Item {},{}>'.format(self.title, self.id)
 
     def tiny(self):
-        return {'id': self.id, 'title': self.title, 'primary_image': self.primary_image}
+        return {'id': self.id, 'title': self.languages["EN"].title, 'primary_image': self.primary_image}
 
     def full(self):
         d = {}
