@@ -89,7 +89,8 @@ class Item(db.Model):
             d[column.name] = str(getattr(self, column.name))
         d["artist"] = self.artist.name
         d["repository"] = self.repository.name
-        d["department"] = self.department.name
+        if self.department:
+            d["department"] = self.department.name
         languages = {}
         for lang, obj in self.languages.items():
             languages[lang] = obj.to_dict()
