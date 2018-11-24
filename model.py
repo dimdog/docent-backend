@@ -45,10 +45,9 @@ class ItemLanguage(db.Model):
     description = db.Column(db.TEXT)
     audiofile = db.Column(db.String(1028))
 
-    def __str__(self):
-        return json.dumps({"language": self.language, "title": self.title, "medium": self.medium, "dimensions": self.dimensions, "creditLine": self.creditLine,
-                           "description": self.description, "audiofile": self.audiofile
-                           })
+    def to_dict(self):
+        return {"language": self.language, "title": self.title, "medium": self.medium, "dimensions": self.dimensions, "creditLine": self.creditLine,
+                "description": self.description, "audiofile": self.audiofile}
 
 
 class Item(db.Model):
@@ -93,7 +92,7 @@ class Item(db.Model):
         d["department"] = self.department.name
         languages = {}
         for lang, obj in self.languages.items():
-            languages[lang] = str(obj)
+            languages[lang] = obj.to_dict()
         d["languages"] = languages
         return d
 
