@@ -37,18 +37,18 @@ class Artist(db.Model):
 class ItemLanguage(db.Model):
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), nullable=False, primary_key=True)
     language = db.Column(db.String(10), nullable=False, primary_key=True)
-    title = db.Column(db.String(1028), nullable=False)
-    medium = db.Column(db.String(1028), nullable=False)
-    dimensions = db.Column(db.String(1028))
-    creditLine = db.Column(db.String(1028))
-    description = db.Column(db.String(1028))
+    title = db.Column(db.TEXT, nullable=False)
+    medium = db.Column(db.TEXT, nullable=False)
+    dimensions = db.Column(db.TEXT)
+    creditLine = db.Column(db.TEXT)
+    description = db.Column(db.TEXT)
     audiofile = db.Column(db.String(1028))
     item = relationship("Item", backref="languages")
 
     def __str__(self):
         return json.dumps({"language": self.language, "title": self.title, "medium": self.medium, "dimensions": self.dimensions, "creditLine": self.creditLine,
                            "description": self.description, "audiofile": self.audiofile
-                         })
+                           })
 
 
 class Item(db.Model):
