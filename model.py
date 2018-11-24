@@ -93,7 +93,7 @@ class Item(db.Model):
         d["department"] = self.department.name
         languages = {}
         for lang, obj in self.languages.items():
-            languages[lang] = json.dumps(obj)
+            languages[lang] = str(obj)
         d["languages"] = languages
         return d
 
