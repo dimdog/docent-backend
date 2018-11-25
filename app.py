@@ -48,12 +48,13 @@ def login():
         print("hi")
         user = User.query.filter_by(email=as_json["email"]).first()
         if not user:
-            user = User(family_name=as_json["last_name"], given_name=as_json["first_name"], full_name=as_json["full_name"],
-                        image_url=as_json["image_url"], email=as_json["email"], locale=id_info["locale"])
+            user = User(family_name=id_info["family_name"], given_name=id_info["given_name"], full_name=id_info["name"],
+                        image_url=as_json["picture"], email=as_json["email"], locale=id_info["locale"])
             db.session.add(user)
             db.session.commit(user)
         login_user(user)
     return json.dumps(user.to_json())
+# {'iss': 'accounts.google.com', 'azp': '633799705698-fs81n284e1iv4318fk2vdclksv29d82e.apps.googleusercontent.com', 'aud': '633799705698-fs81n284e1iv4318fk2vdclksv29d82e.apps.googleusercontent.com', 'sub': '101477866356937362560', 'email': 'dimdog@gmail.com', 'email_verified': True, 'at_hash': 'FrCen2m7wpa-WwTxfWta0g', 'name': 'Ben Reiter', 'picture': 'https://lh6.googleusercontent.com/-37vcW9X8k70/AAAAAAAAAAI/AAAAAAAADy8/oqM2ebjWLxQ/s96-c/photo.jpg', 'given_name': 'Ben', 'family_name': 'Reiter', 'locale': 'en', 'iat': 1543177052, 'exp': 1543180652, 'jti': 'db71a5490749bf79be98b9f685d7dc223159c6d4'}
 
 # print("HERE:{}".format(os.environ['PORT']))
 # app.run(port=int(os.environ.get('PORT', 17995)))
