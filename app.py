@@ -47,7 +47,7 @@ def login():
             and as_json["email"] == id_info["email"]:
         db_user = User.query.filter_by(email=as_json["email"]).first()
         if db_user:
-            print("Found user:{}").format(db_user.to_json())
+            print("Found user:{}".format(db_user.to_json()))
         if not db_user:
             db_user = User(family_name=id_info["family_name"], given_name=id_info["given_name"], full_name=id_info["name"],
                         image_url=id_info["picture"], email=as_json["email"], locale=id_info["locale"])
