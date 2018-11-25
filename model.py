@@ -3,12 +3,22 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import attribute_mapped_collection
 import os
-import simplejson as json
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
 db = SQLAlchemy(app)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    family_name = db.Column(db.String(100))
+    given_name = db.Column(db.String(100))
+    full_name = db.Column(db.String(100))
+    image_url = db.Column(db.String(1028))
+    email = db.Column(db.String(100), nullable=False, unique=True)
+    password = db.Column(db.String(100), nullable=False)  # For now we'll use hashed google ids
+    # actually remove password, use the JWT decoding described on the google login react page
 
 
 class Repository(db.Model):
