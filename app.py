@@ -49,7 +49,7 @@ def login():
         user = User.query.filter_by(email=as_json["email"]).first()
         if not user:
             user = User(family_name=id_info["family_name"], given_name=id_info["given_name"], full_name=id_info["name"],
-                        image_url=as_json["picture"], email=as_json["email"], locale=id_info["locale"])
+                        image_url=id_info["picture"], email=as_json["email"], locale=id_info["locale"])
             db.session.add(user)
             db.session.commit(user)
         login_user(user)
