@@ -35,7 +35,7 @@ def login():
     print("-----")
     print(claims)
     print("%%%%%%%%%%")
-    id_info = id_token.verify_oauth2_token(as_json.get("tokenId"), google_request, audience='docentapp.com')
+    id_info = id_token.verify_oauth2_token(as_json.get("tokenId"), google_request, audience='633799705698-fs81n284e1iv4318fk2vdclksv29d82e.apps.googleusercontent.com')
     print(id_info)
     print("-----")
     return json.dumps(request.args)
