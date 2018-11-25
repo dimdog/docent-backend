@@ -32,6 +32,7 @@ def index():
 @app.route("/<int:item_id>")
 def get_item(item_id):
     print(current_user)
+    print(session)
     return json.dumps(Item.query.filter(Item.id == item_id).one().full())
 
 

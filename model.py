@@ -29,7 +29,7 @@ class User(db.Model):
         return False
 
     def get_id(self):
-        return "{}:{}".format(self.id, self.email)
+        return "{}".format(self.id)
 
     def to_json(self):
         d = {}
