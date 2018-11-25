@@ -16,6 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+app.secret_key = os.environ("FLASK_SECRET_KEY")
 
 
 @login_manager.user_loader
