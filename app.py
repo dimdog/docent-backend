@@ -28,17 +28,12 @@ def get_item(item_id):
 
 @app.route("/login", methods=["POST"])
 def login():
-    print(dir(request))
     as_json = request.get_json()
-    print(as_json)
-    claims = jwt.decode(as_json.get("tokenId"), verify=False, audience="docentapp.com")
-    print("-----")
-    print(claims)
     print("%%%%%%%%%%")
     id_info = id_token.verify_oauth2_token(as_json.get("tokenId"), google_request, audience='633799705698-fs81n284e1iv4318fk2vdclksv29d82e.apps.googleusercontent.com')
     print(id_info)
     print("-----")
-    return json.dumps(request.args)
+    return json.dumps(as_json)
 
 # print("HERE:{}".format(os.environ['PORT']))
 # app.run(port=int(os.environ.get('PORT', 17995)))
