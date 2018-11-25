@@ -45,18 +45,18 @@ def login():
     print("-----")
     if "iss" in id_info and id_info["iss"] == "accounts.google.com" \
             and as_json["email"] == id_info["email"]:
-        user = User.query.filter_by(email=as_json["email"]).first()
-        if user:
-            print("Found user:{}").format(user.to_json())
-        if not user:
-            user = User(family_name=id_info["family_name"], given_name=id_info["given_name"], full_name=id_info["name"],
+        db_user = User.query.filter_by(email=as_json["email"]).first()
+        if db_user:
+            print("Found user:{}").format(db_user.to_json())
+        if not db_user:
+            db_user = User(family_name=id_info["family_name"], given_name=id_info["given_name"], full_name=id_info["name"],
                         image_url=id_info["picture"], email=as_json["email"], locale=id_info["locale"])
-            db.session.add(user)
+            db.session.add(db_user)
             db.session.commit()
-        login_user(user)
+        login_user(db_user)
         print(session)
-        session['user_id'] = user.id
-    return json.dumps(user.to_json())
+        session['user_id'] = db_user.id
+    return json.dumps(db_user.to_json())
 # {'iss': 'accounts.google.com', 'azp': '633799705698-fs81n284e1iv4318fk2vdclksv29d82e.apps.googleusercontent.com', 'aud': '633799705698-fs81n284e1iv4318fk2vdclksv29d82e.apps.googleusercontent.com', 'sub': '101477866356937362560', 'email': 'dimdog@gmail.com', 'email_verified': True, 'at_hash': 'FrCen2m7wpa-WwTxfWta0g', 'name': 'Ben Reiter', 'picture': 'https://lh6.googleusercontent.com/-37vcW9X8k70/AAAAAAAAAAI/AAAAAAAADy8/oqM2ebjWLxQ/s96-c/photo.jpg', 'given_name': 'Ben', 'family_name': 'Reiter', 'locale': 'en', 'iat': 1543177052, 'exp': 1543180652, 'jti': 'db71a5490749bf79be98b9f685d7dc223159c6d4'}
 
 # print("HERE:{}".format(os.environ['PORT']))
