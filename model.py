@@ -17,8 +17,25 @@ class User(db.Model):
     full_name = db.Column(db.String(100))
     image_url = db.Column(db.String(1028))
     email = db.Column(db.String(100), nullable=False, unique=True)
-    password = db.Column(db.String(100), nullable=False)  # For now we'll use hashed google ids
-    # actually remove password, use the JWT decoding described on the google login react page
+    locale = db.Column(db.String(100))  # language preference
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return "{}:{}".format(self.id, self.email)
+
+    def to_json(self):
+        d = {}
+        for column in self.__table__.columns:
+            d[column.name] = str(getattr(self, column.name))
+        return d
 
 
 class Repository(db.Model):
