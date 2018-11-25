@@ -26,7 +26,7 @@ def get_item(item_id):
 @app.route("/login", methods=["POST"])
 def login():
     print(dir(request))
-    claims = jwt.decode(request.args.get("token"), verify=False)
+    claims = jwt.decode(request.args.get("accessToken"), verify=False)
     print("-----")
     print(claims)
     print("-----")
