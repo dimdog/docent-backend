@@ -21,6 +21,7 @@ app.secret_key = os.environ["FLASK_SECRET_KEY"]
 
 @login_manager.user_loader
 def load_user(user_id):
+    print("-----------"+user_id+"--------------")
     return User.get(session["user_id"])
 
 
