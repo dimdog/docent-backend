@@ -57,6 +57,7 @@ def login():
         login_user(db_user)
         print(session)
         session['user_id'] = db_user.id
+        session.modified = True
     return json.dumps(db_user.to_json())
 # {'iss': 'accounts.google.com', 'azp': '633799705698-fs81n284e1iv4318fk2vdclksv29d82e.apps.googleusercontent.com', 'aud': '633799705698-fs81n284e1iv4318fk2vdclksv29d82e.apps.googleusercontent.com', 'sub': '101477866356937362560', 'email': 'dimdog@gmail.com', 'email_verified': True, 'at_hash': 'FrCen2m7wpa-WwTxfWta0g', 'name': 'Ben Reiter', 'picture': 'https://lh6.googleusercontent.com/-37vcW9X8k70/AAAAAAAAAAI/AAAAAAAADy8/oqM2ebjWLxQ/s96-c/photo.jpg', 'given_name': 'Ben', 'family_name': 'Reiter', 'locale': 'en', 'iat': 1543177052, 'exp': 1543180652, 'jti': 'db71a5490749bf79be98b9f685d7dc223159c6d4'}
 
