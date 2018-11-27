@@ -1,4 +1,4 @@
-from flask import Flask, request, session, make_response
+from flask import Flask, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
@@ -53,14 +53,11 @@ def login():
             print("Found user:{}".format(db_user.to_json()))
         if not db_user:
             db_user = User(family_name=id_info["family_name"], given_name=id_info["given_name"], full_name=id_info["name"],
-                           image_url=id_info["picture"], email=as_json["email"], locale=id_info["locale"])
+                        image_url=id_info["picture"], email=as_json["email"], locale=id_info["locale"])
             db.session.add(db_user)
             db.session.commit()
         login_user(db_user)
-        print(session)
-        resp = make_response(json.dumps(db_user.to_json()))
-        resp.set_cookie('user_token', as_json.get("tokenId"), domain="https://virtual-docent.herokuapp.com")
-    return resp
+    return json.dumps(db_user.to_json())
 
 # print("HERE:{}".format(os.environ['PORT']))
 # app.run(port=int(os.environ.get('PORT', 17995)))
