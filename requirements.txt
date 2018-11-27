@@ -8,3 +8,4 @@ requests
 simplejson
 flask-login
 google-auth
+pycrypto
