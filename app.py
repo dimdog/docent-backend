@@ -62,7 +62,8 @@ def login():
     db_user = load_user_from_token(as_json.get("tokenId"), as_json["email"])
     resp = make_response(json.dumps(db_user.to_json()))
     resp.set_cookie("user_token", as_json.get("tokenId"))
-    print(resp)
+    print(dir(resp))
+    print(resp.cookies)
     return resp
 
 # print("HERE:{}".format(os.environ['PORT']))
