@@ -59,7 +59,7 @@ def login():
         login_user(db_user)
         print(session)
         resp = make_response(json.dumps(db_user.to_json()))
-        resp.set_cookie('user_token', as_json.get("tokenId"))
+        resp.set_cookie('user_token', as_json.get("tokenId"), domain="https://virtual-docent.herokuapp.com")
     return resp
 
 # print("HERE:{}".format(os.environ['PORT']))
