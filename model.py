@@ -2,6 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import attribute_mapped_collection
+from sqlalchemy.sql import func
+
 import os
 
 
@@ -18,6 +20,7 @@ class User(db.Model):
     image_url = db.Column(db.String(1028))
     email = db.Column(db.String(100), nullable=False, unique=True)
     locale = db.Column(db.String(100))  # language preference
+    likes = relationship("UserLikes")
 
     def is_authenticated(self):
         return True
@@ -36,6 +39,13 @@ class User(db.Model):
         for column in self.__table__.columns:
             d[column.name] = str(getattr(self, column.name))
         return d
+
+
+class UserLikes(db.Model):
+    item_id = db.Column(db.Integer, db.ForeignKey("item.id"), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    date_updated = db.Column(db.DateTime, nullable=False, server_default=func.now())
+    item = relationship("Item", backref="userlikes")
 
 
 class Repository(db.Model):

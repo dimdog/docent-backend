@@ -5,12 +5,12 @@ import os
 from model import Item, User
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager
 
 import simplejson as json
 
-#from Crypto.Cipher import AES
-#aes_obj = AES.new(os.environ["CRYPTO_SEED"], AES.MODE_CBC, os.environ["CRYPTO_IV"])
+# from Crypto.Cipher import AES
+# aes_obj = AES.new(os.environ["CRYPTO_SEED"], AES.MODE_CBC, os.environ["CRYPTO_IV"])
 
 google_request = requests.Request()
 app = Flask(__name__)
@@ -24,21 +24,31 @@ app.secret_key = os.environ["FLASK_SECRET_KEY"]
 
 @login_manager.user_loader
 def load_user(user_id):
-    print("-----------"+user_id+"--------------")
     return User.get(session["user_id"])
 
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
     return json.dumps({"items": [item.tiny() for item in Item.query.filter_by(repository_id=2).all()]})
 
 
-@app.route("/<int:item_id>")
+@app.route("/<int:item_id>", methods=["POST", "GET", "DELETE"])
 def get_item(item_id):
-    print(current_user)
-    print(request.cookies)
-    print(session)
-    return json.dumps(Item.query.filter(Item.id == item_id).one().full())
+    as_json = request.get_json()
+    print("data:{}".format(as_json))
+    response = json.dumps(Item.query.filter(Item.id == item_id).one().full())
+    if request.method == "POST":
+        pass
+        # TODO
+
+    return response
+
+
+def load_user_from_request(request):
+    as_json = request.get_json()
+    # TODO THIS DOES NOT FEEL SECURE!
+    db_user = load_user_from_token(as_json.get("tokenId"), as_json["email"])
+    return db_user
 
 
 def load_user_from_token(token, email_verify=None):
@@ -50,20 +60,17 @@ def load_user_from_token(token, email_verify=None):
             print("Found user:{}".format(db_user.to_json()))
         if not db_user:
             db_user = User(family_name=id_info["family_name"], given_name=id_info["given_name"], full_name=id_info["name"],
-                        image_url=id_info["picture"], email=email_verify, locale=id_info["locale"])
+                           image_url=id_info["picture"], email=email_verify, locale=id_info["locale"])
             db.session.add(db_user)
             db.session.commit()
     return db_user
 
+
 @app.route("/login", methods=["POST"])
 def login():
-    as_json = request.get_json()
-    # TODO THIS DOES NOT FEEL SECURE!
-    db_user = load_user_from_token(as_json.get("tokenId"), as_json["email"])
+    db_user = load_user_from_request(request)
     resp = make_response(json.dumps(db_user.to_json()))
-    resp.set_cookie("user_token", as_json.get("tokenId"))
-    print(dir(resp))
-    print(resp.cookies)
+    # resp.set_cookie("user_token", as_json.get("tokenId"))  # This is busted because of heroku
     return resp
 
 # print("HERE:{}".format(os.environ['PORT']))
