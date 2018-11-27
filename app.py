@@ -9,8 +9,8 @@ from flask_login import LoginManager, current_user
 
 import simplejson as json
 
-from Crypto.Cipher import AES
-aes_obj = AES.new(os.environ["CRYPTO_SEED"], AES.MODE_CBC, os.environ["CRYPTO_IV"])
+#from Crypto.Cipher import AES
+#aes_obj = AES.new(os.environ["CRYPTO_SEED"], AES.MODE_CBC, os.environ["CRYPTO_IV"])
 
 google_request = requests.Request()
 app = Flask(__name__)
