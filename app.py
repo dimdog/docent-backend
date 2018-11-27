@@ -61,7 +61,7 @@ def login():
     # TODO THIS DOES NOT FEEL SECURE!
     db_user = load_user_from_token(as_json.get("tokenId"), as_json["email"])
     resp = make_response(json.dumps(db_user.to_json()))
-    resp.set_cookie("userToken", as_json.get("tokenId"))
+    resp.set_cookie("userToken", as_json.get("tokenId"), domain="docentapp.com")
     return resp
 
 # print("HERE:{}".format(os.environ['PORT']))
