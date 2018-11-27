@@ -1,4 +1,4 @@
-from flask import Flask, request, session
+from flask import Flask, request, session, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
@@ -33,6 +33,7 @@ def index():
 @app.route("/<int:item_id>")
 def get_item(item_id):
     print(current_user)
+    print(request.cookies)
     print(session)
     return json.dumps(Item.query.filter(Item.id == item_id).one().full())
 
@@ -52,15 +53,14 @@ def login():
             print("Found user:{}".format(db_user.to_json()))
         if not db_user:
             db_user = User(family_name=id_info["family_name"], given_name=id_info["given_name"], full_name=id_info["name"],
-                        image_url=id_info["picture"], email=as_json["email"], locale=id_info["locale"])
+                           image_url=id_info["picture"], email=as_json["email"], locale=id_info["locale"])
             db.session.add(db_user)
             db.session.commit()
         login_user(db_user)
         print(session)
-        session['user_id'] = db_user.id
-        session.modified = True
-    return json.dumps(db_user.to_json())
-# {'iss': 'accounts.google.com', 'azp': '633799705698-fs81n284e1iv4318fk2vdclksv29d82e.apps.googleusercontent.com', 'aud': '633799705698-fs81n284e1iv4318fk2vdclksv29d82e.apps.googleusercontent.com', 'sub': '101477866356937362560', 'email': 'dimdog@gmail.com', 'email_verified': True, 'at_hash': 'FrCen2m7wpa-WwTxfWta0g', 'name': 'Ben Reiter', 'picture': 'https://lh6.googleusercontent.com/-37vcW9X8k70/AAAAAAAAAAI/AAAAAAAADy8/oqM2ebjWLxQ/s96-c/photo.jpg', 'given_name': 'Ben', 'family_name': 'Reiter', 'locale': 'en', 'iat': 1543177052, 'exp': 1543180652, 'jti': 'db71a5490749bf79be98b9f685d7dc223159c6d4'}
+        resp = make_response(json.dumps(db_user.to_json()))
+        resp.set_cookie('user_token', as_json.get("tokenId"))
+    return resp
 
 # print("HERE:{}".format(os.environ['PORT']))
 # app.run(port=int(os.environ.get('PORT', 17995)))
