@@ -27,6 +27,12 @@ def load_user(user_id):
     return User.get(session["user_id"])
 
 
+@app.route("/gallery", methods=["POST"])
+def gallery():
+    db_user = load_user_from_request(request)
+    return json.dumps({"items": [like.item.tiny() for like in db_user.likes.values()]})
+
+
 @app.route("/", methods=["GET"])
 def index():
     return json.dumps({"items": [item.tiny() for item in Item.query.filter_by(repository_id=2).all()]})
