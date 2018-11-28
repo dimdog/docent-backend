@@ -48,11 +48,11 @@ def like_item(item_id):
 
 
 def item_response(db_user, item_id):
-    response = json.dumps(Item.query.filter(Item.id == item_id).one().full())  # do better than 500 on error
+    response = Item.query.filter(Item.id == item_id).one().full()  # do better than 500 on error
     if db_user:
         response["liked"] = item_id in db_user.likes
         response["user"] = db_user.to_json()
-    return response
+    return json.dumps(response)
 
 
 @app.route("/<int:item_id>", methods=["POST", "GET", "DELETE"])
