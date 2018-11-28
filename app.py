@@ -2,7 +2,7 @@ from flask import Flask, request, session, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
-from model import Item, User
+from model import Item, User, UserLike
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from flask_login import LoginManager
@@ -32,22 +32,42 @@ def index():
     return json.dumps({"items": [item.tiny() for item in Item.query.filter_by(repository_id=2).all()]})
 
 
+@app.route("/like/<int:item_id>", methods=["POST", "DELETE"])
+def like_item(item_id):
+    db_user = load_user_from_request(request)
+    if request.method == "POST":
+        if item_id not in db_user.likes:
+            ul = UserLike(user_id=db_user.id, item_id=item_id)
+            db.session.add(ul)
+            db.session.commit()
+    else:
+        if item_id in db_user.likes:
+            session.delete(db_user.likes[item_id])
+            session.commit()
+    return item_response(db_user, item_id)
+
+
+def item_response(db_user, item_id):
+    response = json.dumps(Item.query.filter(Item.id == item_id).one().full())  # do better than 500 on error
+    if db_user:
+        response["liked"] = item_id in db_user.likes
+        response["user"] = db_user.to_json()
+    return response
+
+
 @app.route("/<int:item_id>", methods=["POST", "GET", "DELETE"])
 def get_item(item_id):
-    as_json = request.get_json()
-    print("data:{}".format(as_json))
-    response = json.dumps(Item.query.filter(Item.id == item_id).one().full())
+    db_user = None
     if request.method == "POST":
-        pass
-        # TODO
-
+        db_user = load_user_from_request(request)
+    response = item_response(db_user, item_id)
     return response
 
 
 def load_user_from_request(request):
     as_json = request.get_json()
     # TODO THIS DOES NOT FEEL SECURE!
-    db_user = load_user_from_token(as_json.get("tokenId"), as_json["email"])
+    db_user = load_user_from_token(as_json.get("tokenId"), as_json.get("email", None))
     return db_user
 
 

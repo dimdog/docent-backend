@@ -20,7 +20,7 @@ class User(db.Model):
     image_url = db.Column(db.String(1028))
     email = db.Column(db.String(100), nullable=False, unique=True)
     locale = db.Column(db.String(100))  # language preference
-    likes = relationship("UserLikes")
+    likes = relationship("UserLike", collection_class=attribute_mapped_collection('item_id'))
 
     def is_authenticated(self):
         return True
@@ -41,7 +41,7 @@ class User(db.Model):
         return d
 
 
-class UserLikes(db.Model):
+class UserLike(db.Model):
     item_id = db.Column(db.Integer, db.ForeignKey("item.id"), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     date_updated = db.Column(db.DateTime, nullable=False, server_default=func.now())
