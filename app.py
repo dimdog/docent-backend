@@ -42,8 +42,9 @@ def like_item(item_id):
             db.session.commit()
     else:
         if item_id in db_user.likes:
-            db.session.delete(db_user.likes[item_id])
-            db.session.commit()
+            curr_session = db.session.object_session(db_user.likes[item_id])
+            curr_session.delete(db_user.likes[item_id])
+            curr_session.commit()
     return item_response(db_user, item_id)
 
 
