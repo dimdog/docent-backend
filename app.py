@@ -75,7 +75,7 @@ def load_user_from_token(token, email_verify=None):
     id_info = id_token.verify_oauth2_token(token, google_request, audience='633799705698-fs81n284e1iv4318fk2vdclksv29d82e.apps.googleusercontent.com')
     if "iss" in id_info and id_info["iss"] == "accounts.google.com" \
             and (email_verify is None or email_verify == id_info["email"]):
-        db_user = User.query.filter_by(email=email_verify).first()
+        db_user = User.query.filter_by(email=id_info["email"]).first()
         if db_user:
             print("Found user:{}".format(db_user.to_json()))
         if not db_user:
