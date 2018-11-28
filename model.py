@@ -133,5 +133,3 @@ class Item(db.Model):
             languages[lang] = obj.to_dict()
         d["languages"] = languages
         return d
-
-db.create_all()

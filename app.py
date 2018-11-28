@@ -96,5 +96,3 @@ def login():
 # print("HERE:{}".format(os.environ['PORT']))
 # app.run(port=int(os.environ.get('PORT', 17995)))
 
-
-db.create_all()
