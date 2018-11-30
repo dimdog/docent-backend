@@ -6,6 +6,8 @@ from model import Item, User, UserLike
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from flask_login import LoginManager
+from flask_sslify import SSLify
+
 
 import simplejson as json
 
@@ -20,6 +22,7 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.secret_key = os.environ["FLASK_SECRET_KEY"]
+sslify = SSLify(app)
 
 
 @login_manager.user_loader

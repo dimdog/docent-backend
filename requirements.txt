@@ -9,3 +9,7 @@ simplejson
 flask-login
 google-auth
 pycrypto
+tqdm
+imageio
+Flask-SSLify
+
