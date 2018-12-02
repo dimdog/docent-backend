@@ -1,21 +1,17 @@
-from model import Item, Artist, Repository, Department
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 import os
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-engine = create_engine(os.environ['DATABASE_URL'])
-Session = sessionmaker(bind=engine)
-session = Session()
 
-print(dir(session))
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
+db = SQLAlchemy(app)
+from model import Item, ItemLanguage
 
-first_item = Item.query.first()
-print(first_item)
-print("dir:{}".format(dir(session)))
-rep_dict = {"name": first_item.repository,
-            "city": "New York",
-            "state": "NY",
-            "country": "United States of America"}
-rep = Repository(**rep_dict)
-session.add(rep)
-session.commit()
+
+for item in db.session.query(Item):
+    il = ItemLanguage(item_id=item.id, language="EN", title=item.title, medium=item.medium, dimensions=item.dimensions,
+                      creditLine=item.creditLine)
+    db.session.add(il)
+
+db.session.commit()
