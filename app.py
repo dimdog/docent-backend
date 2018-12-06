@@ -1,4 +1,4 @@
-from flask import Flask, request, session, make_response
+from flask import Flask, request, session, make_response, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
@@ -69,7 +69,10 @@ def item_response(db_user, item_id):
 def get_item(item_id):
     db_user = None
     if request.method == "POST":
-        db_user = load_user_from_request(request)
+        try:
+            db_user = load_user_from_request(request)
+        except:
+            abort(403)
     response = item_response(db_user, item_id)
     return response
 
@@ -98,10 +101,14 @@ def load_user_from_token(token, email_verify=None):
 
 @app.route("/login", methods=["POST"])
 def login():
-    db_user = load_user_from_request(request)
-    resp = make_response(json.dumps(db_user.to_json()))
-    # resp.set_cookie("user_token", as_json.get("tokenId"))  # This is busted because of heroku
-    return resp
+    try:
+        db_user = load_user_from_request(request)
+        resp = make_response(json.dumps(db_user.to_json()))
+        return resp
+    except:
+        abort(403)
+
+
 
 # print("HERE:{}".format(os.environ['PORT']))
 # app.run(port=int(os.environ.get('PORT', 17995)))
