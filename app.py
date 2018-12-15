@@ -1,12 +1,13 @@
-from flask import Flask, request, session, make_response, abort
+from flask import Flask, request, make_response, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
 from model import Item, User, UserLike
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_sslify import SSLify
+import random
 
 
 import simplejson as json
@@ -27,53 +28,58 @@ sslify = SSLify(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get(session["user_id"])
+    return User.query.filter_by(id=user_id).one()
 
 
-@app.route("/gallery", methods=["POST"])
+@app.route("/api/gallery", methods=["POST"])
+@login_required
 def gallery():
-    db_user = load_user_from_request(request)
-    return json.dumps({"items": [like.item.tiny() for like in db_user.likes.values()]})
+    return json.dumps({"items": [like.item.tiny() for like in current_user.likes.values()], "user": current_user.to_json()})
 
 
-@app.route("/", methods=["GET"])
+def random_selection(in_list, count):
+    if len(in_list) <= count:
+        return in_list
+    return random.choices(in_list, k=count)
+
+
+@app.route("/api", methods=["GET"])
 def index():
-    return json.dumps({"items": [item.tiny() for item in Item.query.filter_by(repository_id=2).all()]})
+    items = [item.tiny() for item in Item.query.filter_by(repository_id=2).all()]
+    limited_list = random_selection(items, 100)
+    response = {"items": limited_list}
+    if not current_user.is_anonymous:
+        response['user'] = current_user.to_json()
+    return json.dumps(response)
 
 
-@app.route("/like/<int:item_id>", methods=["POST", "DELETE"])
+@app.route("/api/like/<int:item_id>", methods=["POST", "DELETE"])
+@login_required
 def like_item(item_id):
-    db_user = load_user_from_request(request)
     if request.method == "POST":
-        if item_id not in db_user.likes:
-            ul = UserLike(user_id=db_user.id, item_id=item_id)
+        if item_id not in current_user.likes:
+            ul = UserLike(user_id=current_user.id, item_id=item_id)
             db.session.add(ul)
             db.session.commit()
     else:
-        if item_id in db_user.likes:
-            curr_session = db.session.object_session(db_user.likes[item_id])
-            curr_session.delete(db_user.likes[item_id])
+        if item_id in current_user.likes:
+            curr_session = db.session.object_session(current_user.likes[item_id])
+            curr_session.delete(current_user.likes[item_id])
             curr_session.commit()
-    return item_response(db_user, item_id)
+    return item_response(current_user, item_id)
 
 
 def item_response(db_user, item_id):
     response = Item.query.filter(Item.id == item_id).one().full()  # do better than 500 on error
-    if db_user:
+    if not db_user.is_anonymous:
         response["liked"] = item_id in db_user.likes
         response["user"] = db_user.to_json()
     return json.dumps(response)
 
 
-@app.route("/<int:item_id>", methods=["POST", "GET", "DELETE"])
+@app.route("/api/<int:item_id>", methods=["GET"])
 def get_item(item_id):
-    db_user = None
-    if request.method == "POST":
-        try:
-            db_user = load_user_from_request(request)
-        except:
-            abort(403)
-    response = item_response(db_user, item_id)
+    response = item_response(current_user, item_id)
     return response
 
 
@@ -89,8 +95,6 @@ def load_user_from_token(token, email_verify=None):
     if "iss" in id_info and id_info["iss"] == "accounts.google.com" \
             and (email_verify is None or email_verify == id_info["email"]):
         db_user = User.query.filter_by(email=id_info["email"]).first()
-        if db_user:
-            print("Found user:{}".format(db_user.to_json()))
         if not db_user:
             db_user = User(family_name=id_info["family_name"], given_name=id_info["given_name"], full_name=id_info["name"],
                            image_url=id_info["picture"], email=email_verify, locale=id_info["locale"])
@@ -99,17 +103,23 @@ def load_user_from_token(token, email_verify=None):
     return db_user
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/api/login", methods=["POST"])
 def login():
     try:
         db_user = load_user_from_request(request)
+        login_user(db_user)
         resp = make_response(json.dumps(db_user.to_json()))
         return resp
     except:
         abort(403)
 
 
+@app.route("/api/logout", methods=["GET"])
+@login_required
+def logout():
+    logout_user()
+    resp = make_response(json.dumps({"success": True}))
+    return resp
 
-# print("HERE:{}".format(os.environ['PORT']))
-# app.run(port=int(os.environ.get('PORT', 17995)))
+
 

@@ -12,4 +12,5 @@ pycrypto
 tqdm
 imageio
 Flask-SSLify
-
+wsgi
+wheel

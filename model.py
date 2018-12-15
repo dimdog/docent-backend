@@ -22,12 +22,15 @@ class User(db.Model):
     locale = db.Column(db.String(100))  # language preference
     likes = relationship("UserLike", collection_class=attribute_mapped_collection('item_id'))
 
+    @property
     def is_authenticated(self):
         return True
 
+    @property
     def is_active(self):
         return True
 
+    @property
     def is_anonymous(self):
         return False
 
