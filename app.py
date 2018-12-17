@@ -31,7 +31,7 @@ def load_user(user_id):
     return User.query.filter_by(id=user_id).one()
 
 
-@app.route("/api/gallery", methods=["POST"])
+@app.route("/api/gallery", methods=["GET"])
 @login_required
 def gallery():
     return json.dumps({"items": [like.item.tiny() for like in current_user.likes.values()], "user": current_user.to_json()})
