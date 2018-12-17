@@ -114,6 +114,14 @@ def login():
         abort(403)
 
 
+@app.route("/api/demologin", methods=["GET"])
+def demologin():
+    db_user = User.query.filter_by(id=0).one()
+    login_user(db_user)
+    resp = make_response(json.dumps(db_user.to_json()))
+    return resp
+
+
 @app.route("/api/logout", methods=["GET"])
 @login_required
 def logout():
