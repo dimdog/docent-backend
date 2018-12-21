@@ -58,12 +58,25 @@ class Repository(db.Model):
     state = db.Column(db.String(1028))
     country = db.Column(db.String(1028))
 
+    def to_json(self):
+        d = {}
+        for column in self.__table__.columns:
+            d[column.name] = str(getattr(self, column.name))
+        d['departments'] = [dept.to_json() for dept in self.departments]
+        return d
+
 
 class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(1028))
     repository_id = db.Column(db.Integer, db.ForeignKey("repository.id"), nullable=False)
     repository = relationship("Repository", backref="departments")
+
+    def to_json(self):
+        d = {}
+        for column in self.__table__.columns:
+            d[column.name] = str(getattr(self, column.name))
+        return d
 
 
 class Artist(db.Model):
