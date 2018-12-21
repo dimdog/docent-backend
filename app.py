@@ -73,7 +73,7 @@ def like_item(item_id):
 
 def item_response(db_user, item_id):
     item = Item.query.filter(Item.id == item_id).one()   # do better than 500 on error
-    response = {"item": item.full()}
+    response = {"item": item.full(), "repository": item.repository.to_json()}
     if item.artist.name != "anonymous":
         response['artist_other_works'] = [i.tiny() for i in Item.query.filter(Item.id != item_id).filter_by(artist_id=item.artist_id)]
     else:
@@ -82,7 +82,6 @@ def item_response(db_user, item_id):
     if not db_user.is_anonymous:
         response["item"]["liked"] = item_id in db_user.likes
         response["user"] = db_user.to_json()
-        response["repository"] = item.repository.to_json()
     return json.dumps(response)
 
 
