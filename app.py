@@ -73,10 +73,10 @@ def item_response(db_user, item_id):
     item = Item.query.filter(Item.id == item_id).one()   # do better than 500 on error
     response = item.full()
     if item.artist.name != "anonymous":
-        response['artist_other_works'] = [i.tiny() for i in Item.query.filter(not Item.id == item_id).filter_by(artist_id=item.artist_id)]
+        response['artist_other_works'] = [i.tiny() for i in Item.query.filter(Item.id != item_id).filter_by(artist_id=item.artist_id)]
     else:
         response['artist_other_works'] = []
-    response['department_other_works'] = [i.tiny() for i in random.choices(Item.query.filter(not Item.id == item_id).filter_by(department_id=item.department_id).all(), k=10)]
+    response['department_other_works'] = [i.tiny() for i in random.choices(Item.query.filter(Item.id != item_id).filter_by(department_id=item.department_id).all(), k=10)]
     if not db_user.is_anonymous:
         response["liked"] = item_id in db_user.likes
         response["user"] = db_user.to_json()
