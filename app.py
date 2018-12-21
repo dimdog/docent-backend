@@ -2,7 +2,7 @@ from flask import Flask, request, make_response, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
-from model import Item, User, UserLike
+from model import Item, User, UserLike, Repository
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
@@ -45,9 +45,11 @@ def random_selection(in_list, count):
 
 @app.route("/api", methods=["GET"])
 def index():
-    items = [item.tiny() for item in Item.query.filter_by(repository_id=2).all()]
+    repository_id = int(request.args.get('repository', '2'))
+    repository = Repository.query.filter_by(id=repository_id).one()
+    items = [item.tiny() for item in Item.query.filter_by(repository_id=repository_id).all()]
     limited_list = random_selection(items, 100)
-    response = {"items": limited_list}
+    response = {"items": limited_list, "repository": repository.to_json()}
     if not current_user.is_anonymous:
         response['user'] = current_user.to_json()
     return json.dumps(response)
