@@ -45,10 +45,14 @@ def random_selection(in_list, count):
 
 @app.route("/api", methods=["GET"])
 def index():
+    req_all = bool(int(request.args.get('all', '0')))
     repository_id = int(request.args.get('repository', '2'))
     repository = Repository.query.filter_by(id=repository_id).one()
     items = [item.tiny() for item in Item.query.filter_by(repository_id=repository_id).all()]
-    limited_list = random_selection(items, 100)
+    if not req_all:
+        limited_list = random_selection(items, 100)
+    else:
+        limited_list = items
     response = {"items": limited_list, "repository": repository.to_json()}
     if not current_user.is_anonymous:
         response['user'] = current_user.to_json()
@@ -85,7 +89,17 @@ def item_response(db_user, item_id):
     return json.dumps(response)
 
 
-@app.route("/api/<int:item_id>", methods=["GET"])
+@app.route("/api/<int:item_id>/<int:height>/<int:width>", methods=["GET"])
+def update_height_width(item_id, height, width):
+    item = Item.query.filter(Item.id == item_id).one()   # do better than 500 on error
+    item.primary_image_height = height
+    item.primary_image_width = width
+    db.session.commit()
+    response = item_response(current_user, item_id)
+    return response
+
+
+@app.route("/api/update/<int:item_id>", methods=["GET"])
 def get_item(item_id):
     response = item_response(current_user, item_id)
     return response
