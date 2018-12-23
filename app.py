@@ -92,9 +92,10 @@ def item_response(db_user, item_id):
 @app.route("/api/update/<int:item_id>/<int:height>/<int:width>", methods=["GET"])
 def update_height_width(item_id, height, width):
     item = Item.query.filter(Item.id == item_id).one()   # do better than 500 on error
-    item.primary_image_height = height
-    item.primary_image_width = width
+    item.primary_image_height = int(height)
+    item.primary_image_width = int(width)
     curr_session = db.session.object_session(item)
+    curr_session.add(item)
     curr_session.commit()
     response = item_response(current_user, item_id)
     return response
