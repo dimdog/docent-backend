@@ -7,6 +7,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_sslify import SSLify
+from collections import defaultdict
 import random
 
 
@@ -34,7 +35,18 @@ def load_user(user_id):
 @app.route("/api/gallery", methods=["GET"])
 @login_required
 def gallery():
-    return json.dumps({"items": [like.item.tiny() for like in current_user.likes.values()], "user": current_user.to_json()})
+    repositories = Repository.query.all()
+    response = {"user": current_user.to_json(), "repositories": [repo.to_json() for repo in repositories]}
+    likes = [like.item for like in current_user.likes.values()]
+    items_by_repo = defaultdict(list)
+
+    for item in likes:
+        items_by_repo[item.repository_id].append(item)
+    
+    for repository in response["respositories"]:
+        repository["items"] = items_by_repo[repository.id]
+
+    return json.dumps(response)
 
 
 def random_selection(in_list, count):
