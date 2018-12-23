@@ -89,7 +89,7 @@ def item_response(db_user, item_id):
     return json.dumps(response)
 
 
-@app.route("/api/<int:item_id>/<int:height>/<int:width>", methods=["GET"])
+@app.route("/api/update/<int:item_id>/<int:height>/<int:width>", methods=["GET"])
 def update_height_width(item_id, height, width):
     item = Item.query.filter(Item.id == item_id).one()   # do better than 500 on error
     item.primary_image_height = height
@@ -99,7 +99,7 @@ def update_height_width(item_id, height, width):
     return response
 
 
-@app.route("/api/update/<int:item_id>", methods=["GET"])
+@app.route("/api/<int:item_id>", methods=["GET"])
 def get_item(item_id):
     response = item_response(current_user, item_id)
     return response
