@@ -49,7 +49,7 @@ def index():
     repository_id = int(request.args.get('repository', '2'))
     repository = Repository.query.filter_by(id=repository_id).one()
     if req_all:
-        items = [item.tiny() for item in Item.query.filter_by(repository_id=repository_id).filter(Item.primary_image_height != None).all()]
+        limited_list = [item.tiny() for item in Item.query.filter_by(repository_id=repository_id).filter(Item.primary_image_height != None).all()]
     else:
         items = [item.tiny() for item in Item.query.filter_by(repository_id=repository_id).all()]
         limited_list = random_selection(items, 100)
