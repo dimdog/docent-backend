@@ -48,11 +48,11 @@ def index():
     req_all = bool(int(request.args.get('all', '0')))
     repository_id = int(request.args.get('repository', '2'))
     repository = Repository.query.filter_by(id=repository_id).one()
-    items = [item.tiny() for item in Item.query.filter_by(repository_id=repository_id).all()]
-    if not req_all:
-        limited_list = random_selection(items, 100)
+    if req_all:
+        items = [item.tiny() for item in Item.query.filter_by(repository_id=repository_id).filter(Item.primary_image_height != None).all()]
     else:
-        limited_list = items
+        items = [item.tiny() for item in Item.query.filter_by(repository_id=repository_id).all()]
+        limited_list = random_selection(items, 100)
     response = {"items": limited_list, "repository": repository.to_json()}
     if not current_user.is_anonymous:
         response['user'] = current_user.to_json()
@@ -94,7 +94,8 @@ def update_height_width(item_id, height, width):
     item = Item.query.filter(Item.id == item_id).one()   # do better than 500 on error
     item.primary_image_height = height
     item.primary_image_width = width
-    db.session.commit()
+    curr_session = db.session.object_session(item)
+    curr_session.commit()
     response = item_response(current_user, item_id)
     return response
 
