@@ -58,11 +58,12 @@ class Repository(db.Model):
     state = db.Column(db.String(1028))
     country = db.Column(db.String(1028))
 
-    def to_json(self):
+    def to_json(self, items=[]):
         d = {}
         for column in self.__table__.columns:
             d[column.name] = str(getattr(self, column.name))
         d['departments'] = [dept.to_json() for dept in self.departments]
+        d['items'] = [item.tiny() for item in items]
         return d
 
 
@@ -131,7 +132,7 @@ class Item(db.Model):
     languages = relationship("ItemLanguage", collection_class=attribute_mapped_collection('language'), backref="item")
 
     def __repr__(self):
-        return '<Item {},{}>'.format(self.title, self.id)
+        return '<Item {},{}>'.format(self.repository_id, self.id)
 
     @property
     def media_type(self):

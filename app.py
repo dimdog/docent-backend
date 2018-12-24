@@ -36,16 +36,11 @@ def load_user(user_id):
 @login_required
 def gallery():
     repositories = Repository.query.all()
-    response = {"user": current_user.to_json(), "repositories": [repo.to_json() for repo in repositories]}
     likes = [like.item for like in current_user.likes.values()]
     items_by_repo = defaultdict(list)
-
     for item in likes:
         items_by_repo[item.repository_id].append(item)
-    
-    for repository in response["respositories"]:
-        repository["items"] = items_by_repo[repository.id]
-
+    response = {"user": current_user.to_json(), "repositories": [repo.to_json(items=items_by_repo[repo.id]) for repo in repositories]}
     return json.dumps(response)
 
 
