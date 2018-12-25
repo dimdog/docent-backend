@@ -1,5 +1,6 @@
 from flask import Flask, request, make_response, abort
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql.expression import func
 from flask_cors import CORS
 import os
 from model import Item, User, UserLike, Repository
@@ -30,6 +31,12 @@ sslify = SSLify(app)
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.filter_by(id=user_id).one()
+
+
+@app.route("/api/random", methods=["GET"])
+def random_item():
+    random_item = Item.query.order_by(func.random()).limit(1)[0]  # for PostgreSQL, SQLite
+    return json.dumps(random_item.full())
 
 
 @app.route("/api/gallery", methods=["GET"])
